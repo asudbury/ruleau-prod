@@ -1,0 +1,3 @@
+export const CASE_STATUS_CLOSED = "CLOSED";
+export const RULE_STATUS_SKIPPED = "SKIPPED";
+

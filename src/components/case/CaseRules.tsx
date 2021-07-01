@@ -18,6 +18,7 @@ import CaseRuleOverrideHistory from "./CaseRuleOverrideHistory";
 import { logDebug } from "../../utils/Logger";
 import CaseRuleDependencies from "./CaseRuleDependencies";
 import RuleauInfoMessage from "../core/RuleauInfoMessage";
+import { CASE_STATUS_CLOSED, RULE_STATUS_SKIPPED } from "../utils/Constants";
 
 interface CaseRulesProps {
   caseStatus: string;
@@ -49,7 +50,7 @@ export default function CaseRules({
 
   const [showSkipped, setShowSkipped] = useState(false);
   const [displayRules, setDisplayRules] = useState(
-    rules.filter((item) => item.result.status !== "SKIPPED")
+    rules.filter((item) => item.result.status !== RULE_STATUS_SKIPPED)
   );
 
   const handleChange = (panel) => (event, isExpanded) => {
@@ -69,7 +70,9 @@ export default function CaseRules({
     setShowSkipped(!showSkipped);
 
     if (showSkipped) {
-      setDisplayRules(rules.filter((item) => item.result.status !== "SKIPPED"));
+      setDisplayRules(
+        rules.filter((item) => item.result.status !== RULE_STATUS_SKIPPED)
+      );
     } else {
       setDisplayRules(rules);
     }
@@ -79,7 +82,9 @@ export default function CaseRules({
     let skippedRules = [];
 
     if (rules) {
-      skippedRules = rules.filter((item) => item.result.status === "SKIPPED");
+      skippedRules = rules.filter(
+        (item) => item.result.status === RULE_STATUS_SKIPPED
+      );
     }
 
     return skippedRules.length > 0;
@@ -131,11 +136,11 @@ export default function CaseRules({
             <Grid container spacing={1}>
               <Grid item xs={1} />
               <Grid item xs={11}>
-                {rule.result.status !== "SKIPPED" &&
+                {rule.result.status !== RULE_STATUS_SKIPPED &&
                   rule.result.payloads.length === 0 && (
                     <RuleauInfoMessage message="This rule has no payload" />
                   )}
-                {rule.result.status !== "SKIPPED" &&
+                {rule.result.status !== RULE_STATUS_SKIPPED &&
                   rule.result.payloads.length > 0 && (
                     <CaseRulePayload rulePayload={rule.result.payloads} />
                   )}
@@ -169,7 +174,7 @@ export default function CaseRules({
               <Grid item xs={1} />
               <Grid item xs={11}>
                 {caseStatus !== "CLOSED" &&
-                  rule.result.status !== "SKIPPED" &&
+                  rule.result.status !== RULE_STATUS_SKIPPED &&
                   !rule.result.result &&
                   canOverrideRule(rule) && (
                     <CaseRuleOverride
@@ -178,7 +183,7 @@ export default function CaseRules({
                       onOverrideUpdated={onOverrideUpdated}
                     />
                   )}
-                {caseStatus === "CLOSED" && (
+                {caseStatus === CASE_STATUS_CLOSED && (
                   <RuleauInfoMessage message="Overrides may not be applied to closed cases. Re-open the case to make changes" />
                 )}
               </Grid>
